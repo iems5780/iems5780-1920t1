@@ -1,2 +1,3 @@
-# iems5780-1920t1
-IEMS5780 2019-2020 Term 1
+# IEMS5780 Building and Deploying Scalable Machine Learning Services (2019-2020 Term 1)
+
+
