@@ -21,9 +21,9 @@ title: Lectures
 
 - Text Classification (1)
 - Notebooks:
-    - [Text classification using logistic regression](https://github.com/iems5780/1819t1/blob/master/notebooks/l3_text_logistic_regression.ipynb)
-    - [Text classification using naive Bayes classifier](https://github.com/iems5780/1819t1/blob/master/notebooks/l3_text_naive_bayes.ipynb)
-    - [SMS Spam Classification](https://github.com/iems5780/1819t1/blob/master/notebooks/l3-sms-spam-example.ipynb)
+    - [Text classification using logistic regression](https://github.com/iems5780/iems5780-1920t1/tree/master/public/notebooks/l3_text_logistic_regression.ipynb)
+    - [Text classification using naive Bayes classifier](https://github.com/iems5780/iems5780-1920t1/tree/master/public/notebooks/l3_text_naive_bayes.ipynb)
+    - [SMS Spam Classification](https://github.com/iems5780/iems5780-1920t1/tree/master/public/notebooks/l3-sms-spam-example.ipynb)
 - References:
     - [Working with Text Data - scikit-learn](http://scikit-learn.org/stable/tutorial/text_analytics/working_with_text_data.html)
     - [Natural Language Processing with Python](http://nltk.org/book/)
