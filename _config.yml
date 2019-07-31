@@ -1,26 +1,24 @@
 # Dependencies
-markdown:         redcarpet
+markdown:         kramdown
 highlighter:      pygments
 
 # Permalinks
 permalink:        pretty
-relative_permalinks: true
 
 # Setup
-title:            Hyde
-tagline:          'A Jekyll theme'
-description:      'A brazen two-column <a href="http://jekyllrb.com" target="_blank">Jekyll</a> theme that pairs a prominent sidebar with uncomplicated content. Made by <a href="https://twitter.com/mdo" target="_blank">@mdo</a>.'
-url:              http://hyde.getpoole.com
+title:            IEMS5780
+tagline:          'CUHK MScIE IEMS5780'
+description:      'CUHK MScIE IEMS5780 Building and Deploying Scalable Machine Learning Services (2019-2020 Term 1)'
+url:              http://iems5780.albertauyeung.com/
 baseurl:          /
 
 author:
-  name:           'Mark Otto'
-  url:            https://twitter.com/mdo
+  name:           'Albert Au Yeung'
+  url:            http://www.albertauyeung.com/
 
-paginate:         5
+#plugins: [jekyll-paginate]
+#paginate:         5
 
 # Custom vars
 version:          2.1.0
 
-github:
-  repo:           https://github.com/poole/hyde
