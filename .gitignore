@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Ignore docs files
 _gh_pages
 _site
@@ -39,3 +40,6 @@ validation-report.json
 
 # Folders to ignore
 node_modules
+=======
+__pycache__
+>>>>>>> b210b40c2398f5872933ef76418de8d70c2ffbfa
