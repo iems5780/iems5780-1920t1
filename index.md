@@ -1,6 +1,6 @@
 ---
 layout: page
-title: IEMS5780
+title: IEMS5780 Course Homepage
 ---
 
 ## Course Description

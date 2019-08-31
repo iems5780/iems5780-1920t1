@@ -5,32 +5,32 @@ title: Lectures
 
 ## Lecture 01 (06 Sep)
 
-- Course Introduction
+- [Course Introduction]({{site.baseurl}}public/lectures/lecture-01.html) [[PDF]({{site.baseurl}}public/lectures/pdfs/lecture-01.pdf)]
 - References:
     - [Think Python 2nd Edition](https://greenteapress.com/wp/think-python-2e/)
     - [The Python (3.6) Tutorial](https://docs.python.org/3.6/tutorial/)
 
 ## Lecture 02 (13 Sep)
 
-- Introduction to Machine Learning
+- [Introduction to Machine Learning]({{site.baseurl}}public/lectures/lecture-02.html)
 - References:
     - [scikit-learn Tutorials](http://scikit-learn.org/stable/tutorial/index.html)
     - [Machine Learning Yearning](http://www.mlyearning.org/) by Andrew Ng
 
 ## Lecture 03 (20 Sep)
 
-- Text Classification (1)
+- [Text Classification (1)]({{site.baseurl}}public/lectures/lecture-03.html)
 - Notebooks:
-    - [Text classification using logistic regression](https://github.com/iems5780/iems5780-1920t1/tree/master/public/notebooks/l3_text_logistic_regression.ipynb)
-    - [Text classification using naive Bayes classifier](https://github.com/iems5780/iems5780-1920t1/tree/master/public/notebooks/l3_text_naive_bayes.ipynb)
-    - [SMS Spam Classification](https://github.com/iems5780/iems5780-1920t1/tree/master/public/notebooks/l3-sms-spam-example.ipynb)
+    - [Text classification using logistic regression]({{site.baseurl}}public/notebooks/l3_text_logistic_regression.ipynb)
+    - [Text classification using naive Bayes classifier]({{site.baseurl}}public/notebooks/l3_text_naive_bayes.ipynb)
+    - [SMS Spam Classification]({{site.baseurl}}public/notebooks/l3-sms-spam-example.ipynb)
 - References:
     - [Working with Text Data - scikit-learn](http://scikit-learn.org/stable/tutorial/text_analytics/working_with_text_data.html)
     - [Natural Language Processing with Python](http://nltk.org/book/)
 
 ## Lecture 04 (27 Sep)
 
-- Text Classification (2)
+- [Text Classification (2)]({{site.baseurl}}public/lectures/lecture-04.html)
 - References:
     - [Word2Vec Tutorail](https://rare-technologies.com/word2vec-tutorial/)
     - [Text Understanding from Scratch](https://arxiv.org/abs/1502.01710). Xiang Zhang, Yann LeCun. 2015.
