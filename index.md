@@ -21,7 +21,7 @@ This course will introduce basic concepts in computer networking and network pro
 
 ### Teaching Assistant
 
-- **Teaching Assistant:** TBC
+- **Teaching Assistant:** Mr. Yuming Zhang [zy219@ie], Miss. Zheyuan Yang [yz019@ie]
 
 ### Assessment Schemes
 
