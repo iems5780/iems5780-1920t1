@@ -12,7 +12,7 @@ title: Lectures
 
 ## Lecture 02 (13 Sep)
 
-- [Introduction to Machine Learning]({{site.baseurl}}public/lectures/lecture-02.html)
+- [Introduction to Machine Learning]({{site.baseurl}}public/lectures/lecture-02.html) [[PDF]({{site.baseurl}}public/lectures/pdfs/lecture-02.pdf)]
 - References:
     - [scikit-learn Tutorials](http://scikit-learn.org/stable/tutorial/index.html)
     - [Machine Learning Yearning](http://www.mlyearning.org/) by Andrew Ng

@@ -17,11 +17,12 @@ This course will introduce basic concepts in computer networking and network pro
 
 - **Instructor:** Dr. Albert Au Yeung [cmauyeung@ie]
 - **Time:** Every Friday 19:00 - 21:30
-- **Venue:** Lee Shau Kee Architecture Building (ARC) G03
+- **Venue:** Fung King Hey Building Swire Hall 1 (SWH-1)
 
-### Teaching Assistant
+### Teaching Assistants
 
-- **Teaching Assistant:** Mr. Yuming Zhang [zy219@ie], Miss. Zheyuan Yang [yz019@ie]
+- Mr. Yuming Zhang [zy219@ie] (Office hour: Fri 13:30-15:30 @SHB826A)
+- Miss. Zheyuan Yang [yz019@ie] (Office hour: Fri 17:00-19:00 @SHB724)
 
 ### Assessment Schemes
 
