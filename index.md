@@ -21,8 +21,8 @@ This course will introduce basic concepts in computer networking and network pro
 
 ### Teaching Assistants
 
-- Mr. Yuming Zhang [zy219@ie] (Office hour: Fri 13:30-15:30 @SHB826A)
-- Miss. Zheyuan Yang [yz019@ie] (Office hour: Fri 17:00-19:00 @SHB724)
+- Mr. Yuming Zhang [zy219@ie] (Office hour: Fri 17:00-19:00 @SHB724)
+- Miss. Zheyuan Yang [yz019@ie] (Office hour: Fri 13:30-15:30 @SHB826A)
 
 ### Assessment Schemes
 
