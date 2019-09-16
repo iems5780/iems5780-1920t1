@@ -19,7 +19,7 @@ title: Lectures
 
 ## Lecture 03 (20 Sep)
 
-- [Text Classification (1)]({{site.baseurl}}public/lectures/lecture-03.html)
+- [Text Classification (1)]({{site.baseurl}}public/lectures/lecture-03.html) [[PDF]({{site.baseurl}}public/lectures/pdfs/lecture-03.pdf)]
 - Notebooks:
     - [Text classification using logistic regression]({{site.baseurl}}public/notebooks/l3_text_logistic_regression.ipynb)
     - [Text classification using naive Bayes classifier]({{site.baseurl}}public/notebooks/l3_text_naive_bayes.ipynb)
