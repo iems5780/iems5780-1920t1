@@ -1,4 +1,4 @@
-body { font-family: 'Assistant'; }
+body { font-family: 'Assistant', 'Microsoft Jhenghei'; }
 h1, h2, h3 {
     font-family: 'Assistant';
     font-weight: normal;
@@ -11,7 +11,7 @@ h3 {
     font-size: 2.2em;
 }
 .remark-code {
-    font-family: 'Ubuntu Mono';
+    font-family: 'Ubuntu Mono', 'Microsoft Jhenghei';
     font-size: 1.1em;
     line-height: 1.25em;
     border: 1px solid #BCBCBC;
