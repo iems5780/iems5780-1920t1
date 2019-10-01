@@ -18,7 +18,7 @@ title: Programming Assignments
 - **Text Classification**
 - **Due Date**: 19th October, 2019 (Saturday)
 - *Late submission will not be marked*
-- [Instructions](/assignment-1)
+- [Instructions](/assignments/assignment-1)
 
 ### Assignment 2
 

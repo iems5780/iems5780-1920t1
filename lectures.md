@@ -30,7 +30,7 @@ title: Lectures
 
 ## Lecture 04 (27 Sep)
 
-- [Text Classification (2)]({{site.baseurl}}public/lectures/lecture-04.html)
+- [Text Classification (2)]({{site.baseurl}}public/lectures/lecture-04.html) [[PDF]({{site.baseurl}}public/lectures/pdfs/lecture-04.pdf)]
 - References:
     - [Word2Vec Tutorail](https://rare-technologies.com/word2vec-tutorial/)
     - [Text Understanding from Scratch](https://arxiv.org/abs/1502.01710). Xiang Zhang, Yann LeCun. 2015.
@@ -38,12 +38,14 @@ title: Lectures
 
 ## Lecture 05 (04 Oct)
 
-- Recommender Systems
+- [Recommender Systems]({{site.baseurl}}public/lectures/lecture-05.html) [[PDF]({{site.baseurl}}public/lectures/pdfs/lecture-05.pdf)]
 - References:
     - [Google News Personalization: Scalable Online Collaborative Filtering](https://www2007.org/papers/paper570.pdf). Das et al., 2007.
     - [Amazon.com Recommendations: Item-to-Item Collaborative Filtering](https://www.cs.umd.edu/~samir/498/Amazon-Recommendations.pdf). Linden et al., 2003.
     - [Browsemap: Collaborative Filtering at LinkedIn](https://engineering.linkedin.com/recommender-systems/browsemap-collaborative-filtering-linkedin)
     - [Building Large Scale Real World Recommender Systems (Netflix)](https://www.slideshare.net/xamat/building-largescale-realworld-recommender-systems-recsys2012-tutorial)
+    - [Gradient Descent Example (Jupyter Notebook)](https://colab.research.google.com/drive/1GY9jFS_iwuD-BSnr_sOmdZ7T6SbrVhGE)
+    - [User-based Collaborative Filtering (Jupyter Notebook)](https://colab.research.google.com/drive/1KgSz_razs9UwFfpL0hg9K3_Fh_JqTre_)
 
 ## Lecture 06 (11 Oct)
 
