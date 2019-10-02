@@ -44,8 +44,8 @@ title: Lectures
     - [Amazon.com Recommendations: Item-to-Item Collaborative Filtering](https://www.cs.umd.edu/~samir/498/Amazon-Recommendations.pdf). Linden et al., 2003.
     - [Browsemap: Collaborative Filtering at LinkedIn](https://engineering.linkedin.com/recommender-systems/browsemap-collaborative-filtering-linkedin)
     - [Building Large Scale Real World Recommender Systems (Netflix)](https://www.slideshare.net/xamat/building-largescale-realworld-recommender-systems-recsys2012-tutorial)
-    - [Gradient Descent Example (Jupyter Notebook)](https://colab.research.google.com/drive/1GY9jFS_iwuD-BSnr_sOmdZ7T6SbrVhGE)
-    - [User-based Collaborative Filtering (Jupyter Notebook)](https://colab.research.google.com/drive/1KgSz_razs9UwFfpL0hg9K3_Fh_JqTre_)
+    - [Gradient Descent Example (Jupyter Notebook)]({{site.baseurl}}public/notebooks/l5-gradient-descent-example.ipynb)
+    - [User-based Collaborative Filtering (Jupyter Notebook)]({{site.baseurl}}public/notebooks/l5-user-based-cf.ipynb)
 
 ## Lecture 06 (11 Oct)
 
