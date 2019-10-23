@@ -36,7 +36,7 @@ title: Lectures
     - [Text Understanding from Scratch](https://arxiv.org/abs/1502.01710). Xiang Zhang, Yann LeCun. 2015.
     - [fasText](https://fasttext.cc/) by Facebook Research
 
-## Lecture 05 (04 Oct)
+## Lecture 05 (11 Oct)
 
 - [Recommender Systems]({{site.baseurl}}public/lectures/lecture-05.html) [[PDF]({{site.baseurl}}public/lectures/pdfs/lecture-05.pdf)]
 - References:
@@ -47,33 +47,35 @@ title: Lectures
     - [Gradient Descent Example (Jupyter Notebook)]({{site.baseurl}}public/notebooks/l5-gradient-descent-example.ipynb)
     - [User-based Collaborative Filtering (Jupyter Notebook)]({{site.baseurl}}public/notebooks/l5-user-based-cf.ipynb)
 
-## Lecture 06 (11 Oct)
+## Lecture 06 (18 Oct)
 
-- Image Classification
+- [Image Classification]({{site.baseurl}}public/lectures/lecture-06.html) [[PDF]({{site.baseurl}}public/lectures/pdfs/lecture-06.pdf)]
 - References:
+    - [Training a Classifier - PyTorch](https://pytorch.org/tutorials/beginner/blitz/cifar10_tutorial.html)
+    - [Image Classification Practical (CNN Version) by Oxford VGG](http://www.robots.ox.ac.uk/~vgg/practicals/category-recognition-cnn/index.html)
     - [ImageNet](http://image-net.org/)
 
-## Lecture 07 (18 Oct)
+## Lecture 07 (25 Oct)
 
 - Network Programming
 
-## Lecture 08 (25 Oct)
+## Lecture 08 (01 Nov)
 
 - Concurrent Programming (1)
 
-## Lecture 09 (01 Nov)
+## Lecture 09 (08 Nov)
 
 - Concurrent Programming (2)
 
-## Lecture 10 (08 Nov)
+## Lecture 10 (15 Nov)
 
 - Web Server and Applications
 
-## Lecture 11 (15 Nov)
+## Lecture 11 (22 Nov)
 
 - Asynchronous Tasks and Message Queues
 
-## Lecture 12 (22 Nov)
+## Lecture 12 (29 Nov)
 
 - Deploying Machine Learning Applications
 
