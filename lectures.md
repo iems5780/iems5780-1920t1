@@ -57,7 +57,11 @@ title: Lectures
 
 ## Lecture 07 (25 Oct)
 
-- Network Programming
+- [Network Programming]({{site.baseurl}}public/lectures/lecture-07.html) [[PDF]({{site.baseurl}}public/lectures/pdfs/lecture-07.pdf)]
+- Sample Scripts:
+    - [TCP Server]({{site.baseurl}}scripts/tcp_simple_server.py), [TCP Client]({{site.baseurl}}scripts/tcp_simple_client.py)
+    - [UDP Server]({{site.baseurl}}scripts/udp_simple_server.py), [UDP Client]({{site.baseurl}}scripts/udp_simple_client.py)
+
 
 ## Lecture 08 (01 Nov)
 
