@@ -65,7 +65,12 @@ title: Lectures
 
 ## Lecture 08 (01 Nov)
 
-- Concurrent Programming (1)
+- [Concurrent Programming (1)]({{site.baseurl}}public/lectures/lecture-08.html) [[PDF]({{site.baseurl}}public/lectures/pdfs/lecture-08.pdf)]
+- Sample Scripts:
+    - [Daemonic Threads]({{site.baseurl}}scripts/multithreading/daemonic_threads.py)
+    - [Multithreaded Server]({{site.baseurl}}scripts/multithreading/multithreaded_server.py)
+    - [Multiprocess Server]({{site.baseurl}}scripts/multithreading/multiprocess_pool_server.py)
+    - [Logging Thread Names]({{site.baseurl}}scripts/multithreading/logging_thread_names.py)
 
 ## Lecture 09 (08 Nov)
 
