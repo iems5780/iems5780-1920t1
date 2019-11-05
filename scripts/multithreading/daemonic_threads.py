@@ -9,6 +9,11 @@ def print_hello():
 if __name__ == "__main__":
     threads = []
     for i in range(5):
-        t = Thread(target=print_hello, daemon=False)
+        t = Thread(target=print_hello, daemon=True)
         t.start()
+        threads.append(t)
+
+    for t in threads:
+        t.join()
+
 

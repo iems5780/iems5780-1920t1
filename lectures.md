@@ -74,7 +74,13 @@ title: Lectures
 
 ## Lecture 09 (08 Nov)
 
-- Concurrent Programming (2)
+- [Concurrent Programming (2)]({{site.baseurl}}public/lectures/lecture-09.html) [[PDF]({{site.baseurl}}public/lectures/pdfs/lecture-09.pdf)]
+- Sample Scripts:
+    - [Non-blocking TCP Server]({{site.baseurl}}scripts/async/socket_server_async.py)
+    - [Image downloading using aiohttp]({{site.baseurl}}scripts/async/image_downloading.py)
+- References
+    - [Async IO in Python: A Complete Walkthrough](https://realpython.com/async-io-python/)
+    - [AIOHTTP - Documentation](https://aiohttp.readthedocs.io/en/stable/)
 
 ## Lecture 10 (15 Nov)
 
