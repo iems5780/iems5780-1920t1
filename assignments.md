@@ -23,18 +23,12 @@ title: Programming Assignments
 ### Assignment 2
 
 - **Socket and Concurrent Programming**
-- **Due Date**: 16th November, 2019 (Saturday)
+- **Due Date**: 30th November, 2019 (Saturday)
 - *Late submission will not be marked*
 - [Instructions](/assignments/assignment-2)
 
 ### Assignment 3
 
 - **Recommender System**
-- **Due Date**: 30th November, 2019 (Saturday)
-- *Late submission will not be marked*
-
-### Assignment 4
-
-- **Asychronous Messaging**
 - **Due Date**: 21st December, 2019 (Saturday)
 - *Late submission will not be marked*
