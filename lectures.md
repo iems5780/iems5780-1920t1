@@ -84,15 +84,23 @@ title: Lectures
 
 ## Lecture 10 (15 Nov)
 
-- Web Server and Applications
+- [Web Server and Applications]({{site.baseurl}}public/lectures/lecture-10.html) [[PDF]]({{site.baseurl}}public/lectures/pdfs/lecture-10.pdf)
+- Sample Scripts:
+    - [HTTP on TCP]({{site.baseurl}}scripts/http/http_on_tcp.py)
+    - [HTTP using requests]({{site.baseurl}}scripts/http/http_requests.py)
+    - [Hello World Web Application using Flask]({{site.baseurl}}scripts/http/flask_hello_world.py)
+    - [Query String and JSON Response in Flask]({{site.baseurl}}scripts/http/flask_data_format.py)
 
 ## Lecture 11 (22 Nov)
 
-- Asynchronous Tasks and Message Queues
+- [Asynchronous Tasks and Message Queues]({{site.baseurl}}public/lectures/lecture-11.html) [[PDF]]({{site.baseurl}}public/lectures/pdfs/lecture-11.pdf)
+- Sample Scripts:
+    - Redis [Publisher]({{site.baseurl}}scripts/redis/redis_pub.py), [Subscriber]({{site.baseurl}}scripts/redis/redis_sub.py)
+    - Celery [Task]({{site.baseurl}}scripts/celery/task.py), [App]({{site.baseurl}}scripts/celery/app.py)
 
 ## Lecture 12 (29 Nov)
 
-- Deploying Machine Learning Applications
+- [Deploying & Scaling Machine Learning Applications]({{site.baseurl}}public/lectures/lecture-12.html) [[PDF]]({{site.baseurl}}public/lectures/pdfs/lecture-12.pdf)
 
 ## Lecture 13 (13 Dec)
 
