@@ -1,159 +1,101 @@
-# IEMS5780 / IERG4080 Assignment 3
+---
+layout: page
+title: Assignment 3
+---
 
-## Movie Recommender System
+## Asynchronous Messaging
 
-* **Deadline**: 2nd December, 2018 (Sunday)
+* **Deadline**: 21st December, 2019 (Saturday)
 * **Total Marks**: 100
 
 ## Objectives
 
-* To get familiar with building **HTTP applications**
-* To get familiar with creating a **Flask application** in Python
-* To get familiar with different basic concepts in **recommender systems**
+* To get familiar with using **asynchronous messaging** in network applications
 
 ## Tasks
 
-In this assignment, you will build a movie recommender system using some **memory-based recommendation algorithms**. The system should be deployed as a Telegram bot and a Web application server.
+In this assignment, you will create an application that performs object recognition using a deep learning model, which is very similar to the one in Assignment 2. However, we will make some changes to the system by replacing direct TCP connections with **asychronous messaging** using **Redis**.
 
-Your recommender system should at least consists of two parts:
-1. A python script **`bot.py`** that continues to receive user messages from Telegram. When a message from a user is received, it sends request(s) to the recommendation server, and formats a response to be sent back to the user via Telegram.
-2. A python script **`app.py`** that implements an HTTP server using Flask. It should provide different routes to accept requests to different functions (see more details below).
+**Please note** that we will NOT use Telegram in this assignment.
 
-The system should provide the following functions:
-1. Accepts a new user identified by the **`chat_id`**
-2. Returns a movie that has not yet been rated by a user so that the user can provide his/her rating on the movie
-3. If enough ratings have been collected from a user, use the **user-based collaborative filtering** algorithm to generate recommended movies to the user
+The following diagram illustrate the **system architecture** of the application.
 
-<center>
-    <img src="assignment-3-system.png" width="90%"/>
-</center>
+<img src="{{site.baseurl}}assignments/assignment-3-system.png" width="100%"/>
 
-More details about how the system should be implemented are described below.
+There are three components in this system:
+1. **`main.py`**: a program that keep reading user input from the command prompt, and is also responsible for printing out the results for the user to read
+2. **`image_downloader.py`**: a program that is responsible for downloading images from either Telegram or a given URL
+3. **`predict.py`**: a program that loads a PyTorch pre-trained model for object recognition, and generates predictions when given an image
 
-### Dataset
+**NOTE** that you should NOT use the publish/subscribe mechanism of Redis in this assignment. You should use **lists** in Redis to implement message queues. Refer to the slides in Lecture 11 for more information: [{{site.baseurl}}public/lectures/lecture-11.html#28]({{site.baseurl}}public/lectures/lecture-11.html#28)
 
-We will use a dataset commonly used in recommender systems research, the **MovieLens 100K movie ratings dataset** created by GroupLens at the University of Minnesota. Check the Website [https://grouplens.org/datasets/movielens/](https://grouplens.org/datasets/movielens/), and read the section "recommended for education and development". We will use the **small** dataset with 100,000 ratings.
+### The Main Script
 
-The dataset consists of 100,000 ratings on different movies by the users of the MovieLens recommender system:
-- 100,000 ratings (1-5) from **600 users** on **9,000 movies**
-- Each user has at least 20 movies
-- Data about the movies and the users
+In the Main Script (`main.py`), you should implement logic that performs the following:
 
-You can read the README file here: [http://files.grouplens.org/datasets/movielens/ml-latest-small-README.html](http://files.grouplens.org/datasets/movielens/ml-latest-small-README.html)
+* **In one thread**, continuously prompt user on the command line for an Image URL (See example below)
+* Whenever a URL is received, create a message and submit it to a message queue in Redis named **`download`**. The message should be JSON-encoded, which contains the following data:
+    1. `timestamp` (the time at which the URL is submitted, in YYYY-mm-dd HH:MM:SS format)
+    2. `url` of the image
+* In **another thread**, keep listening for message from another message queue named **`prediction`**. The message from that queue should contains the predictions, the URL, and the timestamp of the request from the user. **Print** the results on the screen. (see example below)
+* If the user does not input a valid URL (i.e. not starting with `http://` or `https://`), **nothing** should be done.
 
-**NOTE**: The original dataset may be too large for this assignment. If it takes a long time to compute predictions, you can use a smaller dataset available here: [https://github.com/iems5780/1819t1/blob/master/assignments/ratings.small.csv](https://github.com/iems5780/1819t1/blob/master/assignments/ratings.small.csv). This dataset is created by filtering away movies with less than 20 ratings, and users with less than 50 ratings. This dataset has ratings from 330 users on 1,235 movies.
-
-### The Telegram Bot Script
-
-The Telegram bot script `bot.py` is used to rely user input to the server, and the server's output back to the user. In this assignment, you **do NOT** have to use a separate thread to communicate with the server. You can handler messages **sequentially** (i.e. one after another).
-
-For this assignment, create a new Telegram bot, and use the `\setcommands` function in the BotFather bot to create **three commands** for your bot (see [https://core.telegram.org/bots#6-botfather](https://core.telegram.org/bots#6-botfather)). The user can use these three commands to interact with your recommender system.
-
-* `/start`
-    - A command to register with the application. On receiving this command, the Telegram bot script should:
-        1. Send a request to the server's `/register` API with the user's `chat_id`, to check whether the user is a new user or an existing user
-        2. If user is new, reply "Welcome!", otherwise reply "Welcome back!"
-* `/rate`
-    - A command to ask the application to present a movie for rating. On reciving this command, the Telegram bot script should:
-        1. Send a request to the server's `/get_unrated_movie` API with the user's `chat_id`
-        2. On receiving the movie information from the server, send the user two messages:
-            - A message containing the name of the movie, and the URL to the movie's page on IMDB
-            - A message asking for the user's rating on this movie, with a custom keyboard
-    - Note that you should store the movie's ID in the callback data, such that you know which movie the user has rated when you receive the user's rating
-    - When a movie rating is received, you should send a request to the server's `/rate` API to submit the rating
-    - An example is shown below
-
-<center>
-    <img src="assignment-3-rating.png" width="45%"/>
-</center>
-
-* `/recommend`
-    - A command to ask the application to recommend a list of movies based on previous ratings. On receiving this command, the Telegram bot script shoud:
-        1. Send a request to the server's `/recommend` API to ask for the **top 3** recommended movies for this user.
-        2. The server may return two different responses, depending on the number of ratings given by that user:
-            - If the user has **10 or more** ratings, the server will return a list of recommended movies
-            - If the user has **less than 10** ratings, the server will return an empty list
-        3. Upone receiving the response from the server:
-            - If the list is not empty, send the list of movies to the user in **separate messages** to the user. Each message contains the title and the URL of the movie's page on IMDB.
-            - if the list is empty, send the following message to the user: **"You have not rated enough movies, we cannot generate recommendation for you"**.
-
-**Hint**: You can refer to the [sample bot script](https://github.com/iems5780/1819t1/blob/master/assignments/assignment-3-sample-bot.py) to see how you can structure your handle function to handle commands from the users.
-
-### The Application Server
-
-The application server should be a **Flask application** that accepts **HTTP requests** on different routes.
-
-You should load **ALL** user ratings when initializing the application. For example, you can create a **dictionary** for storing the user's ratings. The key is the user's ID, and the value is a **numpy array** containing the user's rating on different movies.
-
-You may also have to load additional data in the application when it is started, such as the titles and IDs of the movies.
-
-**Hint**: You can add attributes to the Flask application when initializing it, and then in the function of a route you can use `current_app` to get a reference to the application (see example below).
+Example inputs and outputs:
 
 ```python
-from flask import Flask, current_app
+Please input the URL of the image: https://image.cnbcfm.com/api/v1/image/105972971-1560808092256preview.jpg?v=1560808098&w=678&h=381
 
-app = Flask(__name__)
-
-# Store something in the "data" attribute
-# of the Flask application
-app.data = "Some data"
-
-@app.route('/')
-def index():
-    # Returns "Some data"
-    return current_app.data
+Results:
+URL: https://image.cnbcfm.com/api/v1/image/105972971-1560808092256preview.jpg?v=1560808098&w=678&h=381
+1. airliner (0.6940)
+2. wing (0.2234)
+3. space_shuttle (0.0125)
+4. moving_van (0.0052)
+5. trailer_truck (0.0031)
 ```
 
-All the **routes** in your Flask application should receive **POST** requests with **JSON data**. They should also send out responses in **JSON format**.
+### The Image Downloading Script
 
-Your Flask application should have the following **routes**:
+In the Image Downloading Script (`image_downloader.py`), you should implement logic that performs the following:
 
-* `/register`
-    - An API for checking whether a user exists in the application
-    - It receives JSON data in the form of<br/>`{"chat_id": "(chat ID of the telegram user)"}`
-    - If the application has seen this chat ID before, the following JSON response:<br/>`{"exists": 1}`
-    - If the application has not seen this chat ID before:
-        - Creates a new user and initialize its item ratings to zeros
-        - Return the following JSON response:<br/>`{"exists": 0}`
-* `/get_unrated_movie`
-    - An API for obtaining a movie that is **NOT yet** rated by the user
-    - It receives JSON data in the form of<br/>`{"chat_id": "(chat ID of the telegram user)"}`
-    - The function handling this API should randomly sample a movie that is not yet rated by the user, and return the movie ID, the title and the URL to the movie's page on IMDB in the following format:<br/>`{"id": 1, "title": "Toy Story (1995)", "url": "..."}`
-    - Note that you may need to **generate the URL** of the movie's page using the movie's ID in the dataset
-* `/rate_movie`
-    - An API for submitting a movie rating form a user
-    - The function handling this API should updating the array of movie ratings of the given user with the rating provided
-    - It should accept JSON data in the following format:<br/>`{"chat_id": "...", "movie_id": 1, "rating": 5}`
-    - On updating the data in the application, it should return the following JSON response:<br/>`{"status": "success"}`
-* `/recommend`
-    - An API for generating recommended movies for a given user
-    - The function handling this API should use the **user-based collaborative filtering** approach to compute the predicted ratings of all movies, and return the **top N** movies as specified in the request JSON
-    - **Note**: the API should return an **empty list** if the number of movies rated by the user is **less than 10**
-    - The API expects the following JSON input data:<br/>`{"chat_id": "...", "top_n": 3}`
-    - It should return the list of movies in the following format:
+* Continuously receiving messages from the message queue **`download`** in Redis.
+* Once a message is recevied, you should download the image from the URL
+* Encode the binary data of the image and submit a message to a message in Redis named **`image`**. The message should be JSON-encoded, which contains the following data:
+    1. `timestamp` (the time at which the URL is submitted, in YYYY-mm-dd HH:MM:SS format)
+    2. `url` of the image
+    2. `image`, the base64-encoded binary data of the image
 
-```javascript
+### The Prediction Script
+
+In the Prediction Script (`predict.py`), you should pre-load a **PyTorch pre-trained InceptionV3 model** when it is first started.
+
+In this script, you should implement logic that performs the following:
+* Continuously receiving messages from the message queue **`image`** in Redis.
+* Once a message is received, decode the image data in the message, preprocess it, and feed it into the PyTorch model to generate predictions
+* Once you have the predictions, submit a message to the message queue `prediction` so that the Bot Script can receive the predictions. You only need to send back the **top 5** predicted labels. The message should be in the following format (similar to Assignment 2, and JSON-encoded):
+
+```python
 {
-    "movies": [
-        {
-            "title": "...",
-            "url": "..."
-        },
-        {
-            "title": "...",
-            "url": "..."
-        },
-        ...
-    ]
+    "predictions": [
+        {"label": "container_ship", "score": 0.4625},
+        {"label": "lifeboat", "score": 0.1579},
+        {"label": "wreck", "score": 0.1383},
+        {"label": "pop_bottle", "score": 0.0477},
+        {"label": "dock", "score": 0.0406},
+    ],
+    "url": "http://...."
 }
 ```
 
-**Note:** We DO NOT use a database in this assignment. Hence, if you restart the application, all the users' ratings will be gone (except, of course, the ratings from the MovieLens dataset). To facilitate testing, you can consider adding ratings to your own Telegram user (check the "chat ID" of yourself) when the application starts.
+### Load Balancing
+
+Once you have finished all the scripts. You can experiment with starting multiple instance of `image_downloader.py` and `predict.py`. You should see that they will consume messages from the message queues alternatively, which the need to do any configurations on the scripts.
 
 ## What to Submit
 
-You should prepare **two files** to be submitted for this assignment:
-* **bot.py**: the script in which you implement the Telegram bot
-* **app.py**: the script in which you implement the Flask application for movie recommendation
+You should prepare **three files** to be submitted for this assignment:
+* **main.py**: the script in which you implement the main program
+* **image_downloader.py**: the script in which you implement the image downloading logic
+* **predict.py**: the script in which you implement the logic of generating predictions using a pre-trained PyTorch model
 
-You should put these two files in a folder named <student_id>_assignment3 (e.g. 12345678_assignment3), and compress it into a zip file (e.g. 12345678_assignment3.zip). Submit the compressed file to Blackboard.
+You should put these two files in a folder named <student_id>_assignment4 (e.g. 12345678_assignment4), and compress it into a zip file (e.g. 12345678_assignment4.zip). Submit the compressed file to Blackboard.

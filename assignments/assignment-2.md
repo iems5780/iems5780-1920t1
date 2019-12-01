@@ -5,7 +5,7 @@ title: Assignment 2
 
 ## Image Classification and Telegram Bot
 
-* **Deadline**: 16th November, 2018 (Friday)
+* **Deadline**: 30th November, 2019 (Friday)
 * **Total Marks**: 100
 
 ## Objectives

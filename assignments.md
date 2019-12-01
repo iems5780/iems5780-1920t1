@@ -32,3 +32,5 @@ title: Programming Assignments
 - **Recommender System**
 - **Due Date**: 21st December, 2019 (Saturday)
 - *Late submission will not be marked*
+- [Instructions](/assignments/assignment-3)
+
