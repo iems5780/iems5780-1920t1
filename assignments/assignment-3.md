@@ -27,7 +27,7 @@ There are three components in this system:
 2. **`image_downloader.py`**: a program that is responsible for downloading images from either Telegram or a given URL
 3. **`predict.py`**: a program that loads a PyTorch pre-trained model for object recognition, and generates predictions when given an image
 
-**NOTE** that you should NOT use the publish/subscribe mechanism of Redis in this assignment. You should use **lists** in Redis to implement message queues. Refer to the slides in Lecture 11 for more information: [{{site.baseurl}}public/lectures/lecture-11.html#28]({{site.baseurl}}public/lectures/lecture-11.html#28)
+**NOTE** that you should NOT use the publish/subscribe mechanism of Redis in this assignment. You should use **lists** in Redis to implement message queues. Refer to the slides in Lecture 11 for more information: [Lecture 11 Slide 28]({{site.baseurl}}public/lectures/lecture-11.html#28)
 
 ### The Main Script
 
@@ -98,4 +98,4 @@ You should prepare **three files** to be submitted for this assignment:
 * **image_downloader.py**: the script in which you implement the image downloading logic
 * **predict.py**: the script in which you implement the logic of generating predictions using a pre-trained PyTorch model
 
-You should put these two files in a folder named <student_id>_assignment4 (e.g. 12345678_assignment4), and compress it into a zip file (e.g. 12345678_assignment4.zip). Submit the compressed file to Blackboard.
+You should put these two files in a folder named <student_id>_assignment3 (e.g. 12345678_assignment3), and compress it into a zip file (e.g. 12345678_assignment3.zip). Submit the compressed file to Blackboard.
