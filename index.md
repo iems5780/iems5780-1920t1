@@ -3,6 +3,15 @@ layout: page
 title: IEMS5780 Course Homepage
 ---
 
+## Final Examination
+
+- The final examination paper can be obtained here: [Final Exam (PDF)]({{site.baseurl}}public/exam/iems5780_final_exam.pdf)
+- Submission deadline: 2019-12-14 (Saturday) 12:00 noon
+- Please use [this template]({{site.baseurl}}public/exam/iems5780_answer_template.txt) to prepare your answers for submission.
+- Please submit the text file to Blackboard before the deadline.
+
+---
+
 ## Course Description
 
 Machine learning refers to making computer to perform various tasks by learning from data. It is also now one of the essential components in many online services, such as in generating personalized recommendations on e-commerce platforms, performing face detection and recognition, predicting the arrival time of delivery, etc. Given the widespread usage of machine learning, it is important that complex machine learning models can be deployed in an efficient way to support real time services at scale and to allow seamless update of the models.
