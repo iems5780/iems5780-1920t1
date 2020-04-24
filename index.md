@@ -9,6 +9,7 @@ title: IEMS5780 Course Homepage
 - Submission deadline: 2019-12-14 (Saturday) 12:00 noon
 - Please use [this template]({{site.baseurl}}public/exam/iems5780_answer_template.txt) to prepare your answers for submission.
 - Please submit the text file to Blackboard before the deadline.
+- **Update 2020-04-24**: Final examination review notes: [FinalExamReview.docx]({{site.baseurl}}public/lectures/FinalExamReview.docx)
 
 ---
 
