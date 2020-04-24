@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>IEMS 5780 - Lecture 11</title>
+    <meta charset="utf-8">
+    <style>
+        @import url(https://fonts.googleapis.com/css?family=Assistant:400,700,400italic);
+        @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+    </style>
+    <link rel="stylesheet" type="text/css" href="/public/lectures/css/style.css"/>
+    <script>
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+</head>
+<body>
+    <textarea id="source">
+
+class: center, middle
+
+# IEMS 5780<br/>Building and Deploying Scalable<br/>Machine Learning Services
+
+### Lecture 11 - Asynchronous Tasks and Message Queues
+
+#### Albert Au Yeung<br/>22th November, 2019
+
+---
+
+class: center, middle
+
+# Asynchronous Tasks
+
+---
+
+# Client Server Architecture
+
+- So far we have been discussing the client-server architecture, in which there is an **explicit** connection / channel between the client and the server
+- Both sides would have to **wait** for the other side when they are engaged (i.e. they are dependent on each other until the connection is **terminated**)
+- E.g. In Assignment 3, the client needs to wait for the result from the server
+
+<center>
+    <img src="img/l8-client_server.png" width="70%">
+</center>
+
+- This works well (and is even necessary) in many situations, but in some others this model can be problematic
+
+---
+
+# Client Server Architecture
+
+- In some situations, the client **does NOT have** to know the result of its request to the server
+- The client simply wants to **trigger** the server to perform some tasks
+- Examples:
+    1. In a movie recommendation Website, client lets the server know that a user has rated a movie. The server will then trigger a process to **generate a new set of recommended movies** to the user.
+    2. In a news aggregation system, several components work together to create usable datasets in pipeline (see illustration below)
+
+<center>
+    <img src="img/l8-news-system.png" width="85%">
+    <br/>System architecture of a new aggregation application
+</center>
+
+---
+
+# HTTP Requests &amp; Responses
+
+- In the case of **HTTP**, there is another problem: the **duration of one request-response** cycle
+- The HTTP request-response cycle is expected to complete in a short time (no one likes waiting!)
+- However, if some tasks on the server side take a long time to complete, and if the client does not need to know about the result, the task should **NOT** be executed within the **request-response** cycle
+- We need **asynchronous tasks**
+
+<center>
+    <img src="img/l8-http-tasks.png" width="80%">
+</center>
+
+---
+
+# Asynchronous Tasks
+
+- **Asynchronous** tasks are tasks that are NOT executed synchronously within an established communication (**non-blocking** to the client or the requester)
+- Used in many scenarios, including:
+    1. Triggering a process that needs a long time to run
+    2. Triggering the process(es) in the next step in a data processing **pipeline**
+    3. Quickly return a response to the client, and allow the client to check for the result later
+- **Benefits**:
+    1. Not holding the other side **waiting** when it does not need to be notified of the result
+    2. Avoid establishing **an explicit connection** between two independent systems (**de-coupling**)
+    3. Avoid **errors** on the server side from hindering other processes on the client side
+
+---
+
+# Asynchronous Tasks
+
+### How can we execute tasks **asynchronously**?
+
+- This is like *multi-threading / multi-processing* on a different scale
+- In multi-processing, we create a **queue** to allow different parts of a system to notify each other of any update
+- E.g. in Assignment 2, a **queue** is used to let child processes know about new clients connected
+
+<center>
+    <img src="img/l8-process-queue.png" width="70%">
+</center>
+
+- A similar **message queue** can be used between individual programs or compoenents
+
+---
+
+# Message Queues
+
+- A **message queue** is a component that receives messages from some programs and deliver the messages to other programs
+- Message queues provide an **asynchronous communications protocol** for **inter-process communication**
+- The sender and receiver of the message do NOT need to interact with the message queue at the same time
+
+<center>
+    <img src="img/l8-message-queue.png" width="50%">
+    <br/>Ref: https://docs.microsoft.com/en-us/azure/architecture/patterns/competing-consumers
+</center>
+
+---
+
+# Message Queues
+
+### Some **requirements** for message queues
+
+- Messages may have different **priorities**
+- Handle a **large number** of messages at the same time
+- Multiple programs (**producers**) may create the same type of messages
+- Multiple programs (**consumers**) may consume the same type of messages
+- Consumers may **crash** and failed to consume a message from time to time
+- ...
+
+---
+
+# Usage of a Message Queue
+
+- When some tasks have to be executed **asynchronously**, an application server can submit messages to the message queue, and let workers execute tasks asynchronously
+- Free the HTTP request-response cycle from heavy tasks
+- Clients are shielded from failures of background tasks
+- If there is a failure, the message queue can make sure that the task is submitted again for retry
+
+<center>
+    <img src="img/l8-message-broker-pattern-1.png" width="75%">
+</center>
+
+---
+
+# Advantages of Message Queues
+
+### De-coupling System Components
+
+- Comparing to a client-server model, system components are now **loosely coupled** (i.e. independent of each other)
+- A message producer does NOT have to know whether any message consumer is running or not
+- **Failure** in one process will not easily propagate to other processes
+
+### Increase Scalability
+
+- With a message queue, no clients are directly connected to servers. More clients or servers can be added to run **in parallel** when needed
+- Simpler **routing** between clients and servers
+- The message queue can **cache** messages, or route messages to less busy processes
+
+---
+
+class: center, middle
+
+# Using Redis as for Publish/Subscribe
+
+---
+
+# Redis
+
+- [http://redis.io/topics/introduction](http://redis.io/topics/introduction)
+- An open source **in-memory** data structure store
+- Can be used as a **key-value database**, **cache**, or **message broker** (more on this in the next lecture)
+- Install redis in Ubuntu with the following command
+
+```bash
+$ sudo apt-get install redis-server
+```
+
+- You can check if the server has been installed successfully by running the redis command line tool:
+
+```bash
+$ redis-cli
+127.0.0.1:6379>
+```
+
+---
+
+# Redis
+
+- Redis is a key-value store, but can also be used as a simple message queue
+- Redis implements the [publish-subscribe pattern](https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern)
+- **Publishers** submit messages to some **channels / topics** in Redis, not specifying which **Subscribers** will handle the messages
+- **Subscribers** express interest in one or more channels and only receive messages that are of interest
+- Ref: [Pub/Sub - Redis](https://redis.io/topics/pubsub)
+- Ref: [Python Redis Client](https://github.com/andymccurdy/redis-py)
+
+---
+
+# Creating a Publisher
+
+- In Python, you can **publish** messages to a specific channel as follows:
+
+```python
+from redis import StrictRedis
+
+# Get a connection to Redis
+queue = StrictRedis(host='localhost', port=6379)
+
+# Publish a message to a channel called testing
+message = "Hello World"
+queue.publish("testing", message.encode("utf-8"))
+
+# Note: It is a good practice to encode the message into bytes before sending out
+```
+
+---
+
+# Creating a Subscriber
+
+```python
+import time
+from redis import StrictRedis
+
+# Connect and subscribe
+pubsub = StrictRedis(host='localhost', port=6379).pubsub()
+pubsub.subscribe('testing')
+
+# The first message you receive will be a confirmation of subscription
+message = pubsub.get_message()
+# {'pattern': None, 'type': 'subscribe', 'channel': 'testing', 'data': 1L}
+
+# The subsequent messages are those from the publisher(s)
+while True:
+    message = pubsub.get_message()
+    if message:
+        print(message)
+    else:
+        time.sleep(1)
+```
+
+---
+
+# Consuming Messages
+
+### Message Format
+
+- **type**: One of the following: `subscribe`, `unsubscribe`, `psubscribe` (p for pattern), `punsubscribe`, `message`, `pmessage`
+- **channel**: The channel (un)subscribed to or the channel a message was published to
+- **pattern**: The pattern that matched a published message's channel. Will be None in all cases except for 'pmessage' types.
+- **data**: The message data. With (un)subscribe messages, this value will be the number of channels and patterns the connection is currently subscribed to. With (p)message messages, this value will be the actual published message.
+
+---
+
+# Pattern Matching Subscriptions
+
+- Instead of an explicit channel name, subscribers can also subscribe using **pattern-matching** mode
+- Pattern-matching subscriptions involve using **wildcard** character in the channel name
+
+```python
+# A subscriber that subscribe to channels with the `news.` prefix
+queue = StrictRedis(host='localhost', port=6379)
+pubsub = queue.pubsub()
+pubsub.psubscribe('news.*')
+
+# The above subscriber will consumer messages published in the following publishers
+queue.publish('news.finance', 'Financial News 001')
+queue.publish('news.international', 'International News 001')
+```
+
+---
+
+# Unsubscribing
+
+- When the subscriber no longer needs to consumer messages from the publishers, it should **unsubscribe** from the channel(s)
+
+```python
+# The following will unsubscribe from the 'testing' channel
+pubsub.unsubscribe('testing')
+
+# You will also get a confirmation message after unsubscription
+message = p.get_message()
+print(message)
+# prints {'channel': 'testing', 'data': 1L, 'pattern': None, 'type': 'unsubscribe'}
+```
+
+```python
+# The following will unsubscribe from ALL channels subscribed previously
+pubsub.unsubscribe()
+
+# The following will unsbscribe from a pattern-matching subscription
+pubsub.punsubscribe('news.*')
+```
+
+---
+
+# Consuming Messages
+
+- `get_message()` will return **immediately**
+- If there is NO messages, it will return `None`
+- If there is a message available, it will return the message dictionary
+
+### Three strategies of consuming messages:
+
+1. Using an indefinite loop
+2. Using the `listen()` function
+3. Running an indefinite loop in a new thread
+
+---
+
+# Consuming Messages (1)
+
+- The simplest way is to use an indefinite loop and handle messages when there is any
+
+```python
+import time
+from redis import StrictRedis
+
+queue = StrictRedis(host='localhost', port=6379)
+pubsub = queue.pubsub()
+pubsub.subscribe('testing')
+
+while True:
+    message = p.get_message()
+    if message is not None:
+        # Handle the message here
+        # ...
+    else:
+        # Do other things
+        # ...
+    time.sleep(0.01)
+```
+
+---
+
+# Consuming Messages (2)
+
+- If you program only needs to perform something when there is a message, you can use the blocking `listen()` function
+- If no message is published to the channel (i.e. no message is available to be consumed, the program will be **blocked**)
+
+```python
+from redis import StrictRedis
+
+queue = StrictRedis(host='localhost', port=6379)
+pubsub = queue.pubsub()
+pubsub.subscribe('testing')
+
+for message in pubsub.listen():
+    # Do something with the message
+    # ...
+```
+
+---
+
+# Consuming Messages (3)
+
+- Finally, you can choose to run a loop in a new **thread**, such that your main thread can still work on other things
+- To use this option, you need to create a function, which will be invoked to handle a message when received
+
+```python
+def handler(message):
+    print(message['data'])
+
+pubsub.subscribe(**{'testing': handler})
+thread = pubsub.run_in_thread(sleep_time=0.01)
+
+# Do other things in this main thread
+...
+
+# Stop the thread before your program ends
+thread.stop()
+```
+
+---
+
+# Broadcasting
+
+- Redis' PubSub mechanism is essentially a **broadcasting** mechanism
+- Messages from publishers will be sent to **ALL** subscribers connected at that time
+
+<center>
+    <img src="img/l8-redis-broadcast.png" width="80%">
+</center>
+
+- What if you only need **ONE** subscriber to receive and process the message?
+
+---
+
+# Message Queue
+
+- In some scenarios, we have message **producers** that will create messages, each of which is only intended for one **consumer**
+- E.g. consider the case in Assignment 2, each client should only be handled by **one** thread. It does not have to be served by all child processes and threads at the same time
+- In other words, we need a proper **message queue**
+
+<center>
+    <img src="img/l8-redis-message-queue.png" width="80%">
+</center>
+
+---
+
+class: middle, center
+
+# Using Redis as a Message Queue
+
+---
+
+# Using Redis as a Message Queue
+
+- The **PubSub** mechanism only broadcasts messages to all subscribers
+- We need another mechanism to implement a **FIFO** message queue
+- We can use the **list** data type in redis
+- **Producers** push message into a **list** (identified with a **key**)
+- **Consumers** pop message from the list
+- Redis operations are thread-safe, so multiple processes can issue commands at the same time
+
+---
+
+# Implementing a Message Queue
+
+- Messages are pushed to a "channel" (which is a key in Redis) using `rpush()` (inserting element at the end of a list)
+- Messages are consumed by using `blpop()` (blocking) or `lpop()` (non-blocking) by the consumers
+- Once a message is retrieved, it is removed from the list
+- Pushing messages:
+
+```python
+from redis import StrictRedis
+
+r = StrictRedis(host='localhost', port=6379)
+message = 'Message 1'
+r.rpush('channel_01', message.encode("utf-8"))
+# The message is now pushed into a list in redis under the key 'channel_01'
+
+...
+```
+
+---
+
+# Implementing a Message Queue
+
+- `blpop()` **blocks** until something is available in the list under the given key
+- Consuming a message:
+
+```python
+from redis import StrictRedis
+
+r = StrictRedis(host='localhost', port=6379)
+
+while True:
+    item = r.blpop('channel_01')
+    print(item)
+    # item is a tuple: (key, data)
+    # the above prints (b'channel_01', b'Message 1')
+    ...
+```
+
+---
+
+# More About Redis
+
+- Check the official documentation at [https://redis.io/documentation](https://redis.io/documentation)
+- A library called `hotqueue` implements a message queue over Redis:<br/>https://github.com/richardhenry/hotqueue
+- [The Little Redis Book](https://github.com/karlseguin/the-little-redis-book): a free book introducing Redis
+
+---
+
+class: middle, center
+
+# Celery
+
+---
+
+# Asynchronous Task
+
+- In the previous section, we use an explicit message queue (redis) between two processes
+- Sometimes, it might be easier for us programmer to focus on writing the logic of tasks, and treat the message queue as something **transparent** to the program
+- We simply want to have a task executed **asynchronously**, without having to worry about **producing** or **consuming** messages
+- In Python, we can use [Celery](http://www.celeryproject.org/), which is a task queue written in Python for Python applications
+- It allows implementation of asynchronous tasks to be more integrated into your Python application
+
+---
+
+# Celery
+
+- A **distributed task queue** written in Python for Python applications
+- It has to be supported by a **message broker** (e.g. Redis or RabbitMQ)
+- Install via pip
+
+```bash
+$ pip3 install Celery
+```
+
+- When using Celery, you create **worker processes** that will execute the asynchronous tasks
+
+---
+
+# Example
+
+- Let's say you would have a task which takes time to complete, and you want to run it **asynchronously**
+- Firstly, you create the function that will run the **task** in a Python module as follows
+
+```python
+import time
+from celery import Celery
+
+# Create a Celery app, providing a name and the URI to the message broker
+# Here we assume Redis is installed and running
+app = Celery('tasks', broker='redis://localhost')
+
+# Create a task using the app.task decorator
+@app.task
+def generate_squares(n):
+    for i in range(n):
+        print(i * i)
+        time.sleep(1)  # simulate a long running task
+```
+
+---
+
+# Example
+
+- Execute a worker by using the follow command (assuming the above script is saved in a `tasks.py` file):
+
+```bash
+$ celery -A tasks worker
+```
+
+- `-A` means that the application is defined in a script named `tasks`, `worker` means starting a worker process
+- You can also create **multiple processes** by using the `concurrency` argument. For example, the following will start 5 worker processes:
+
+```bash
+$ celery -A tasks worker --concurrency=5
+```
+
+---
+
+# Example
+
+- Now, if in another Python program you need to execute the task asynchronously, you can simply do
+
+```python
+from tasks import generate_squares
+
+# Use .delay to execute the Celery task asynchronously
+generate_squares.delay(100)
+```
+
+- The above script will terminate after the call to `generate_squares`, it will NOT wait until the function has terminated.
+- Effectively, the task is being carried out by the Celery worker, and this script is NOT blocked by the task
+
+---
+
+# Keeping Track of Asynchronous Tasks
+
+- In many cases, you simply want to submit a task and are not concerned about the result
+- In other cases, you may want to **keep track** of the status of the task
+- For the latter case, Celery needs a **backend** storage to temporarily stores the states of the asynchronous tasks
+- In general we can also use **Redis** as the backend
+
+---
+
+# Keeping Track of Asynchronous Tasks
+
+- When creating the Celery application, set the `backend` argument as well:
+
+```python
+import time
+from celery import Celery
+
+# Create a Celery app, providing a name and the URI to the message broker
+# Here we assume Redis is installed and running
+app = Celery('tasks', broker='redis://localhost', backend='redis://localhost')
+
+# Create a task using the app.task decorator
+@app.task
+def generate_squares(n):
+    for i in range(n):
+        print(i * i)
+        time.sleep(1)  # simulate a long running task
+```
+
+---
+
+# Keeping Track of Asynchronous Tasks
+
+- Once you have a backend, you can check the status of a task submitted:
+
+```python
+import time
+from celery.result import AsyncResult
+from tasks import generate_squares
+
+result = generate_squares.delay(5)
+task_id = result.task_id
+
+result = AsyncResult(task_id)
+time.sleep(1.0)
+
+print(result.ready())  # False because the task is not finished
+time.sleep(5.0)
+
+print(result.ready())  # True because the task has finished
+print(result.result)   # The return value of the task (None in this case)
+print(result.state)    # The current state of the task
+```
+
+---
+
+class: center, middle
+
+# Kafka
+
+---
+
+# Message Queues
+
+- We used **Redis** as a message queue, which acts as the middleman between **publishers** and **subscribers**
+- However, Redis has certain **limitations** when used as a message queue:
+    - Messages are NOT stored
+    - Consumers/subscribers must be online, otherwise messages will be discarded
+    - Redis is an in-memory value store, it CANNOT support to hold too many large messages
+    - Does NOT support scenario in which there are more messages published than consumed
+- To support large scale applications, we need something more advanced
+
+---
+
+class: split
+
+# Kafka
+
+.column-left[
+<center>
+    <img src="img/l12-kafka-architecture.png" width="85%">
+    <br/><br/>
+    Ref: https://en.wikipedia.org/wiki/Apache_Kafka
+</center>
+]
+.column-right[
+- **Kafka** is an open-source **distributed** message broker developed by the Apache Software Foundation
+- Originally developed by LinkedIn, open-sourced in 2011
+- It is designed to support **high throughput**, and **scalable** messaging needs
+]
+
+---
+
+# Basic Concepts
+
+### Example applications
+
+- Message broker between multiple systems or applications
+- Log aggregation (collect logs from multiple applications for archiving and analysis)
+- Data stream processing (e.g. extracting keywords from Twitter messages)
+
+### Important Features
+
+- Kafka is run as a **cluster** on one or more servers that can span multiple datacenters.
+- The Kafka cluster stores streams of records in categories called **topics**.
+- Each record consists of a **key**, a **value**, and a **timestamp**. 
+
+---
+
+# Topics in Kafka
+
+- A **topic** is a **category** or **feed name** to which messages are published
+- A topic can have **zero, one, or many consumers** that subscribe to the data published to it
+- Each topic has one or more **partitions**:
+
+<center>
+    <img src="img/l12-kafka-topics.png" width="35%">
+</center>
+
+- Each partition is an ordered sequence of messages
+- Each record is assigned a unique sequence ID called **offset**
+
+---
+
+# Topics in Kafka
+
+- Kafka stores all messages on the hard disk for a period of time (**retention period**)
+- Kafka maintains the **offset** at which a consumer will consume the next message
+- Consumers can control their own offsets to read messages in the partition
+
+<center>
+    <img src="img/l12-kafka-consumers.png" width="35%">
+</center>
+
+- Each topic has multiple partitions, messages can be stored in different partitions
+- On a **Kafka cluster**, partitions of the same topic may be stored on different servers to increase scalability
+
+---
+
+# Consumers
+
+- Each consumers of Kafka messages are labelled with a **consumer group name**
+- Messages in a partition will only be sent to one consumer within the SAME group
+- This mechanism can be used to perform **load balancing** (all consumers are in the same group) or support **broadcasting** (each consumer is in a different group)
+
+<center>
+    <img src="img/l12-kafka-consumer-groups.png" width="40%">
+</center>
+
+---
+
+# Using Kafka
+
+- To try out Kafka, you can follow the tutorial quick start guide here:<br/>[https://kafka.apache.org/quickstart](https://kafka.apache.org/quickstart)
+- Kafka uses [ZooKeeper](https://zookeeper.apache.org/) to maintain configuration information and notify producers and consumers if any new brokers are added or removed from Kafka
+- After downloading, first start the Zookeeper service:
+
+```bash
+$ bin/zookeeper-server-start.sh config/zookeeper.properties
+```
+
+- Then, start the Kafka server:
+
+```bash
+$ bin/kafka-server-start.sh config/server.properties
+```
+
+---
+
+# Using Kafka in Python
+
+- In Python, we can use the `kafka-python` package to connect to Kafka<br>[https://github.com/dpkp/kafka-python](https://github.com/dpkp/kafka-python)
+- It is a pure Python implementation (does not depends on other C/C++ libraries)
+- Install by using the following command:
+
+```bash
+$ pip3 install kafka-python
+```
+
+---
+
+# Producer in Python
+
+- Sending messages to Kafka is very straight forward:
+
+```python
+from kafka import KafkaProducer
+
+# Specify the bootstrap server (host + port)
+producer = KafkaProducer(bootstrap_servers='localhost:1234')
+
+# Send out a message to a topic (here the topic is "notification")
+producer.send('notification', b'Hello from Kafka!')
+```
+
+- Note: `send()` is a **non-blocking** function, it returns immediately
+- If you terminate the program immediately after calling `send()`, your message may not be sent to Kafka
+
+---
+
+# Producer in Python
+
+- To send structured data, you can serialize your data using JSON
+- Serializing the data yourself:
+
+```python
+import json
+...
+data = json.dumps({"content": "Hello Kafka!"})
+producer.send('notification', data.encode('utf-8'))
+```
+
+- Or you can set the `value_serializer` when creating the producer
+
+```python
+import json
+...
+producer = KafkaProducer(value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+producer.send('notification', {"content", "Hello Kafka!"})
+```
+
+---
+
+# Consumer in Python
+
+```python
+from kafka import KafkaConsumer
+
+# Specify the topic to consume from
+consumer = KafkaConsumer('notification')
+
+# Consume messages from the topic
+for message in consumer:
+    content = message.value.decode("utf-8")
+```
+
+- KafkaConsuemr is an iterator of `ConsumerRecords`, which are named tuples with the following attributes:
+    - topic (the topic to which the message is published)
+    - partition (the partition to which the message is published)
+    - offset (offset of the message in the partition)
+    - key (the key of the message, may not be used
+    - value (the content of the message)
+
+---
+
+# Consumer in Python
+
+- You can specify the **group name** of the consumer to use the group mechanism of Kafka
+
+```python
+from kafka import KafkaConsumer
+
+consumer = KafkaConsumer('notification', group_id='group_001')
+...
+```
+
+- You can also specify `value_deserializer` so that you don't need to explicitly de-serialize data by yourself
+
+```python
+import json
+from kafka import KafkaConsumer
+
+consumer = KafkaConsumer(value_deserializer=json.loads)
+...
+```
+
+---
+
+class: center, middle
+
+# End of Lecture 11
+
+
+    </textarea>
+    <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_HTML&delayStartupUntil=configured" type="text/javascript"></script>
+    <script>
+      var slideshow = remark.create({
+        // Set the slideshow display ratio
+        ratio: '16:9',
+        
+        // Customize slide number label, either using a format string..
+        slideNumberFormat: '%current% / %total%',
+        
+        // Enable or disable counting of incremental slides in the slide counting
+        countIncrementalSlides: true,
+
+        highlightStyle: 'tomorrow',
+        });
+      // Setup MathJax
+      MathJax.Hub.Config({
+          tex2jax: {
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+          }
+      });
+
+      MathJax.Hub.Configured();
+    </script>
+  </body>
+</html>

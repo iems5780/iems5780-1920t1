@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Assignment 2 &middot; IEMS5780
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-144-precomposed.png">
+                                 <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>
+        <a href="/">
+          IEMS5780
+        </a>
+      </h1>
+      <p class="lead">CUHK MScIE IEMS5780 Building and Deploying Scalable Machine Learning Services (2019-2020 Term 1)</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item" href="/">Course Info</a>
+      <a class="sidebar-nav-item" href="/lectures">Lectures</a>
+      <a class="sidebar-nav-item" href="/assignments">Assignments</a>
+    </nav>
+
+    <p>&copy; 2020. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div class="page">
+  <h1 class="page-title">Assignment 2</h1>
+  <h2 id="image-classification-and-telegram-bot">Image Classification and Telegram Bot</h2>
+
+<ul>
+  <li><strong>Deadline</strong>: 30th November, 2019 (Friday)</li>
+  <li><strong>Total Marks</strong>: 100</li>
+</ul>
+
+<h2 id="objectives">Objectives</h2>
+
+<ul>
+  <li>To try using existing deep learning frameworks to classify images using pre-trained models</li>
+  <li>To get familiar with socket programming in Python</li>
+  <li>To get familiar with message passing between threads and processes in Python</li>
+</ul>
+
+<h2 id="tasks">Tasks</h2>
+
+<p>In this assignment, you will build an <strong>image classifier</strong> and then deploy the classifier as a <strong>chatbot</strong> on <strong>Telegram</strong>. You will NOT be required to train your own model, as the focus would be on socket programming and multi-threaded programming in Python.</p>
+
+<p>You will build a system which offer image classification service via Telegram bot. A user in Telegram can either send <strong>an image</strong> or <strong>the URL of an image</strong> to the bot, and the bot will feed the image (download the image first if it is given a URL) into a deep learning model to generate image classification predictions, and then send back the result to the user.</p>
+
+<p><img src="/assignments/assignment2-system.png" width="100%" /></p>
+
+<p>The overall architecture of the system is shown in the diagram above. The details of each component will be described below.</p>
+
+<h2 id="the-bot-script">The Bot Script</h2>
+
+<p>In the Bot Script (<code>bot.py</code>), you should implement logic that performs the following:</p>
+
+<ul>
+  <li>Continuously receiving user messages from Telegram</li>
+  <li>Whenever a message is received, <strong>if</strong> the message contains an <strong>image</strong>, or <strong>if</strong> the message’s text has an URL inside, get the binary data of the image, and send it via a <strong>TCP connection</strong> to the server</li>
+  <li>If the message does not contain an image or a URL to an image, <strong>nothing</strong> has to be done</li>
+  <li>Once classification results are received from the server, <strong>format</strong> the output and send the results back to the user</li>
+</ul>
+
+<p>Your script should have at least <strong>three threads</strong> running. Each thread will be responsible for different operations. The threads <strong>should NOT share any variables</strong>, and data between different threads should be passed using <strong>queues</strong>.</p>
+
+<h3 id="thread-1---receiving-messages">Thread 1 - Receiving Messages</h3>
+
+<p>You can re-use part of the scripts you wrote in Assignment 1 to listen for messages the user sends via Telegram. You can assume that the message can be of one of the following <strong>two types</strong>:</p>
+
+<ol>
+  <li>The message contains only <strong>text</strong>, which is a <strong>URL</strong> to an image on the Web</li>
+  <li>The message contains a <strong>photo</strong> (refers to Telegram’s <a href="https://core.telegram.org/bots/api#message">API documentation</a> to see how to retrieve the photo from Telegram)</li>
+</ol>
+
+<p>In this thread, you should keep getting messages from Telegram. Once a message is received, you should extract the image (either from the given URL or from Telegram), and pass the <strong>image object</strong> as well as the <strong>chat_id</strong> to <strong>Thread 2</strong> by putting it into <strong>Queue 1</strong>.</p>
+
+<p><strong>Hint 1</strong>:</p>
+
+<p>You can use the following code to download the photo from Telegram.</p>
+
+<pre><code class="language-python">if content_type == 'photo':
+    bot.download_file(msg['photo'][-1]['file_id'], 'file.png')
+</code></pre>
+
+<p><strong>Hint 2</strong>:</p>
+
+<p>You can load an image from a file using the <a href="https://pillow.readthedocs.io/en/5.3.x/">Pillow</a> package:</p>
+
+<pre><code class="language-python">from PIL import Image
+
+image = Image.open('file.png')
+</code></pre>
+
+<h3 id="thread-2---client-thread">Thread 2 - Client Thread</h3>
+
+<p>This thread keeps getting data from <strong>Queue 1</strong>. Once data is obtained form the queue, it should create a socket and attempt to establish <strong>a new TCP connection</strong> to the server.</p>
+
+<p>Once the connection is established, it should <strong>send the image as well as the chat_id</strong> to the server, and then wait for the response from the server. Since the data sent to the server should be a <strong>string</strong>, you should first create a <strong>dictionary</strong> containing the data, and then use <code>json.dumps</code> to convert it into a JSON-encoded string.</p>
+
+<p>You will need to implement your own method for determining whether a message is <strong>fully received</strong> on both the client side and the server side. For example, you can append a special string such as <code>##END##</code> at the end of the message to delimit the message.</p>
+
+<p>Note that you should have received <strong>an image object</strong> from <strong>Queue 1</strong>. You should <strong>encode the binary data</strong> into string such that it can be sent over the TCP connection. One way of doing this is to convert the image object into a <strong>base64 encoded</strong> string:</p>
+
+<pre><code class="language-python">import base64
+from io import BytesIO
+from PIL import Image
+
+image = Image.open('file.png')
+buffered = BytesIO()
+image.save(buffered, format="PNG")
+encoded_image = base64.b64encode(buffered.getvalue())
+</code></pre>
+
+<p>Thus, the dictionary that will be encoded using <code>json.dumps</code> would be something like the following:</p>
+
+<pre><code class="language-python">data = {
+    'image': &lt;base64-encoded string of the image object&gt;,
+    'chat_id': &lt;chat id as received from Telegram&gt;
+}
+</code></pre>
+
+<p>When the response from the server is received, this thread should put the response into <strong>Queue 2</strong>.</p>
+
+<h3 id="thread-3---sending-messages">Thread 3 - Sending Messages</h3>
+
+<p>This thread keeps getting data from <strong>Queue 2</strong>. Once data is received, it should format the output and send a message back to the user via Telegram.</p>
+
+<p>The message sent to the user should contain the <strong>top 5 classes</strong> predicted by the model in the server. As an example, if a photo of a container ship is received from the user, the message sent to the user should look like below:</p>
+
+<pre><code>1. container_ship (0.4625)
+2. lifeboat (0.1579)
+3. wreck (0.1383)
+4. pop_bottle (0.0477)
+5. dock (0.0406)
+</code></pre>
+
+<h2 id="the-server">The Server</h2>
+
+<p>In the <code>server.py</code> script, you will need to implement a <strong>TCP server</strong>, in which there are <strong>two threads</strong> running (including the main thread). The <strong>main thread</strong> will be responsible for <strong>listening for incoming connections</strong> from clients. Once a client is connected, it should pass throught a queue the client socket to the <strong>second thread</strong>, which will communicate with the client.</p>
+
+<p>The second thread should pre-load a <strong>PyTorch pre-trained Inception V3 model</strong> when it is first started. It will then continuously getting data from the queue. Given a client socket, it will read the message from the client, first <strong>decode the JSON data</strong>, and then <strong>decode the base64-encoded image data</strong>. It should then feed the image into the neural network, and obtain the predicted classes as well as the probabilities.</p>
+
+<p><strong>Hint 1</strong>: The base64-encoded image can be decoded using the following code:</p>
+
+<pre><code class="language-python">import base64
+image_data = base64.b64decode(encoded_image)
+with open('image.png', 'wb') as outfile:
+    outfile.write(image_data)
+</code></pre>
+
+<p>Once the predictions are generated, the second thread should compose a dictionary containing the <strong>top 5</strong> predictions, as well as the <strong>chat_id</strong> in the original message as in the example below:</p>
+
+<pre><code class="language-python">{
+    "predictions": [
+        {"label": "container_ship", "proba": 0.4625},
+        {"label": "lifeboat", "proba": 0.1579},
+        {"label": "wreck", "proba": 0.1383},
+        {"label": "pop_bottle", "proba": 0.0477},
+        {"label": "dock", "proba": 0.0406},
+    ],
+    "chat_id": &lt;chat_id&gt;
+}
+</code></pre>
+
+<p>This dictionary should be JSON-encoded, and then sent back to the client.</p>
+
+<h2 id="what-to-submit">What to Submit</h2>
+
+<p>You should prepare <strong>two files</strong> to be submitted for this assignment:</p>
+<ul>
+  <li><strong>bot.py</strong>: the script in which you implement the Telegram bot</li>
+  <li><strong>server.py</strong>: the script in which you implement the server deploying the image classification model</li>
+</ul>
+
+<p>You should put these two files in a folder named <student_id>_assignment1 (e.g. 12345678_assignment2), and compress it into a zip file (e.g. 12345678_assignment2.zip). Submit the compressed file to Blackboard.</student_id></p>
+
+</div>
+
+    </div>
+
+  </body>
+</html>

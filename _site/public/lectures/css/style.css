@@ -1,0 +1,76 @@
+body { font-family: 'Assistant', 'Microsoft Jhenghei'; }
+h1, h2, h3 {
+    font-family: 'Assistant';
+    font-weight: normal;
+}
+h3 {
+    margin: 8px 0px;
+}
+.remark-slide-content h1 {
+    color: #3344AA;
+    font-size: 2.2em;
+}
+.remark-code {
+    font-family: 'Ubuntu Mono', 'Microsoft Jhenghei';
+    font-size: 1.1em;
+    line-height: 1.25em;
+    border: 1px solid #BCBCBC;
+}
+.remark-inline-code {
+    font-family: 'Ubuntu Mono';
+    font-weight: bold;
+    color: #3377BB;
+}
+
+li {
+    font-size: 1.3em;
+    line-height: 1.6em;
+}
+li li {
+    font-size: 1.05em;
+    line-height: 1.4em;
+}
+
+/* Two-column layout */
+.left-column {
+    color: #999;
+    width: 16%;
+    height: 92%;
+    float: left;
+}
+.left-column h2 {
+    color: #999;
+}
+.left-column h3:last-of-type, .left-column h3:last-child {
+    color: #333;
+}
+.right-column {
+    width: 80%;
+    float: right;
+    padding-top: 1em;
+}
+
+.equal-split .column-left{
+    display: block;
+    float: left;
+    width: 45%;
+    padding-right: 6px;
+}
+.equal-split .column-right{
+    display: block;
+    float: right;
+    width: 45%;
+    padding-left: 6px;
+}
+
+.split .column-left {
+    display: block;
+    float: left;
+    width: 60%;
+}
+.split .column-right {
+    display: block;
+    float: right;
+    width: 35%;
+    padding-left: 12px;
+}

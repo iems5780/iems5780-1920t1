@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Assignment 1 &middot; IEMS5780
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-144-precomposed.png">
+                                 <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>
+        <a href="/">
+          IEMS5780
+        </a>
+      </h1>
+      <p class="lead">CUHK MScIE IEMS5780 Building and Deploying Scalable Machine Learning Services (2019-2020 Term 1)</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item" href="/">Course Info</a>
+      <a class="sidebar-nav-item" href="/lectures">Lectures</a>
+      <a class="sidebar-nav-item" href="/assignments">Assignments</a>
+    </nav>
+
+    <p>&copy; 2020. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div class="page">
+  <h1 class="page-title">Assignment 1</h1>
+  <h2 id="text-classification-and-telegram-bot">Text Classification and Telegram Bot</h2>
+
+<ul>
+  <li><strong>Deadline</strong>: 19th October, 2019 (Saturday)</li>
+  <li><strong>Total Marks</strong>: 100</li>
+</ul>
+
+<p>In this assignment, you will build a <strong>text classifier</strong> of movie reviews, and then deploy the text classifier as a <strong>chatbot</strong> on <strong>Telegram</strong> to allow other people to use it. The task you will be working on is a <strong>binary classification</strong> problem: given a movie review, determine if it is <strong>positive</strong> or <strong>negative</strong>.</p>
+
+<p>We will use a dataset of movie reviews collected from <a href="https://www.imdb.com/">IMDb</a>, which is a movie database where Internet users can leave their comments about movies. The dataset can be obtained from the following Webpage: <a href="http://ai.stanford.edu/~amaas/data/sentiment/">http://ai.stanford.edu/~amaas/data/sentiment/</a>.</p>
+
+<p>Some descriptions of the dataset:</p>
+<ul>
+  <li>User reviews of movies on IMDb</li>
+  <li>A review is either labelled as <strong>positive</strong> or <strong>negative</strong></li>
+  <li>There are a total of 25,000 reviews grouped as a training set, and another 25,000 reviews grouped as a test set.</li>
+  <li>There are also some unlabelled data</li>
+  <li>Preprocessed data are also available in the compressed file</li>
+</ul>
+
+<h3 id="task-1-text-classification-70-marks">Task 1: Text Classification (70 marks)</h3>
+
+<p>You will have to submit a <strong>Jupyter notebook</strong> for this task, which shows all your steps for training and evaluating the text classification model.</p>
+
+<p>What you will have to do:</p>
+
+<ol>
+  <li><strong>Data Preparation</strong> (15 marks)
+    <ul>
+      <li>Prepare a full dataset by <strong>combining</strong> all the training and test data found in the downloaded raw data (<strong>DO NOT</strong> use the preproessed data)</li>
+      <li>Randomly split the full dataset into a training set with <strong>70%</strong> of the data, and a test set with <strong>30%</strong> of the data (hence, you will have <strong>35,000</strong> reviews for training, and <strong>15,000</strong> reviews for testing)</li>
+      <li>Check that the ratio of positive to negative reviews is roughly <strong>1:1</strong> in both the training and test set</li>
+    </ul>
+  </li>
+  <li><strong>Using a Naive Bayes Classifier</strong> (15 marks)
+    <ul>
+      <li>Build a pipeline using scikit-learn’s <code>CounterVectorizer</code> to <strong>vectorize</strong> the input data and train a <strong>naive Bayes classifier</strong> using the training data</li>
+      <li>Compute the following metrics on the test set
+        <ul>
+          <li>accuracy</li>
+          <li>precision and recall of <strong>both positve and negative reviews</strong></li>
+        </ul>
+      </li>
+      <li>Repeat the above but use the <code>TfidfVectorizer</code> instead</li>
+    </ul>
+  </li>
+  <li><strong>Using a Logistic Regression Classifier</strong> (10 marks)
+    <ul>
+      <li>Repeat the above experiments but use the <code>LogisticRegression</code> class in scikit-learn instead of a naive Bayes model</li>
+    </ul>
+  </li>
+  <li><strong>Adding Bi-grams</strong> (10 marks)
+    <ul>
+      <li>By default, the vectorizers only extract <strong>unigrams</strong> as features. Repeat all experiments above but adding <strong>bigram</strong> features.</li>
+    </ul>
+  </li>
+  <li><strong>Using fastText</strong> (15 marks)
+    <ul>
+      <li>Instead of using scikit-learn, use Facebook’s <a href="https://github.com/facebookresearch/fastText">fastText</a> library (use the Python API)</li>
+      <li>You can use the default values of the parameters when training a model</li>
+      <li>Train a fastText model using the same training set and compute metrics on the same test set as above.</li>
+    </ul>
+  </li>
+  <li><strong>Model Persistence</strong> (5 marks)
+    <ul>
+      <li>Compare the accuracy scores of all the <strong>scikit-learn models</strong> you have built (you should have <strong>8 models</strong>)</li>
+      <li>Which model (e.g. which vectorizer + which classification model + with/without bigram) has the highest score?</li>
+      <li>Save that model as a file named <strong>model.pkl</strong></li>
+    </ul>
+  </li>
+</ol>
+
+<p>You should keep all the steps and results in the same Jupyter notebook for submission.</p>
+
+<h3 id="task-2-deploying-your-model-as-a-telegram-bot-30-marks">Task 2: Deploying Your Model as a Telegram Bot (30 marks)</h3>
+
+<p>Your next task is to deploy the selected model so that other people can use it. To skip the troubles of developing a UI for the application, you will deploy the models as a Telegram bot. Check the Telegram bot platform <a href="https://telegram.org/blog/bot-revolution">https://telegram.org/blog/bot-revolution</a> and the Telegram Bot API <a href="https://core.telegram.org/bots/api">https://core.telegram.org/bots/api</a>.</p>
+
+<p>Check also the Telepot framework for developing Telegram Bot in Python <a href="https://github.com/nickoala/telepot">https://github.com/nickoala/telepot</a>.</p>
+
+<p>Firstly, you should create a Telegram bot by following the instructions at https://core.telegram.org/bots#3-how-do-i-create-a-bot. This bot will be used in latter assignments as well. If you are enrolled in IEMS5780, name your bot <strong>iems_xxxxxx</strong> where xxxxxx is your student ID.</p>
+
+<p>You can easily develop a program that continuously consumes messages from a user on Telegram, process the messages, and sends back responses to the user. Below is an example bot, which will simply echo what was sent by the user.</p>
+
+<pre><code class="language-python">import time
+import telepot
+from telepot.loop import MessageLoop
+
+def handle(msg):
+    """
+    A function that will be invoked when a message is
+    recevied by the bot
+    """
+    content_type, chat_type, chat_id = telepot.glance(msg)
+
+    if content_type == "text":
+        content = msg["text"]
+        reply = "You said: {}".format(content)
+        bot.sendMessage(chat_id, reply)
+
+if __name__ == "__main__":
+    
+    # Provide your bot's token
+    bot = telepot.Bot("YOUR_TELEGRAM_BOT_TOKEN")
+    MessageLoop(bot, handle).run_as_thread()
+
+    while True:
+        time.sleep(10)
+</code></pre>
+
+<p>Your bot should fulfil the following requirements:</p>
+
+<ul>
+  <li>Whenever it receives a message from a user, it should pass the message into the text classification model.</li>
+  <li>If the model predicts that it is positive, the bot should say <strong>“This is a positive review!”</strong>, otherwise the bot should say <strong>“This is a negative review!”</strong>.</li>
+  <li>At the end of the message, you should append also the <strong>probability of the predicted class</strong>, up to 2 decimal places</li>
+  <li>Your bot should NOT load the model inside the <code>handle</code> function. It should only be loaded once when the script is executed.</li>
+</ul>
+
+<p>Below is an example of inputs and outputs:</p>
+
+<pre><code>Input  : This is a wonderful movie!
+Output : This is a positive review! (0.89)
+
+Input  : I will not recommend this movie to my friends
+Output : This is a negative review! (0.76)
+</code></pre>
+
+<p><strong>Note:</strong> You do not need to keep your script running for marking. We will execute the script to test if necessary. Make sure you have the telegram bot token written inside the source code.</p>
+
+<h3 id="what-to-submit">What to Submit</h3>
+
+<p>You should prepare <strong>two files</strong> to be submitted for this assignment:</p>
+<ul>
+  <li><strong>classifiers.ipynb</strong>: the Jupyter notebook in which you have done Task 1, including all the source codes and results</li>
+  <li><strong>bot.py</strong>: the script in which you implement the Telegram bot to perform text classification on user inputs</li>
+</ul>
+
+<p>You should put these two files in a folder named <student_id>_assignment1 (e.g. 12345678_assignment1), and compress it into a zip file (e.g. 12345678_assignment1.zip). Submit the compressed file to Blackboard.</student_id></p>
+
+</div>
+
+    </div>
+
+  </body>
+</html>
